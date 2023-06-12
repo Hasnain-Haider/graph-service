@@ -1,6 +1,7 @@
 package us.hassu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+//put in many origins just to get the CORS error to go away
+@CrossOrigin(origins = {"*", "localhost:80"})
 @RestController
 public class GraphController {
     @Autowired
     GraphService graphService;
 
     @GetMapping("/generatemaze")
-    public ResponseMaze generateMaze(@RequestParam Integer height, @RequestParam Integer width) {
+    public ResponseMaze generateMaze(@RequestParam(required = false) Integer height, @RequestParam(required = false) Integer width) {
         Maze maze = graphService.generateMaze(height, width);
         Grid grid = maze.getGrid();
 
