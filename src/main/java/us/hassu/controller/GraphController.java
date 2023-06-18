@@ -12,7 +12,7 @@ import us.hassu.entity.ResponseMaze;
 import us.hassu.entity.ResponseMazeNode;
 import us.hassu.exception.RateLimitExceededException;
 import us.hassu.graphs.graph.Graph;
-import us.hassu.graphs.graph.Grid;
+import us.hassu.graphs.maze.Grid;
 import us.hassu.graphs.maze.Maze;
 import us.hassu.graphs.maze.MazeNode;
 import us.hassu.service.GraphService;
@@ -42,9 +42,9 @@ public class GraphController {
 
     @GetMapping("/generatemaze")
     public ResponseEntity<ResponseMaze> generateMaze(@RequestParam(required = false) Integer height, @RequestParam(required = false) Integer width) {
-        if (!shouldProcessRequest()) {
-            throw new RateLimitExceededException("Too many requests");
-        }
+//        if (!shouldProcessRequest()) {
+//            throw new RateLimitExceededException("Too many requests");
+//        }
 
         if (height != null) {
             height = Math.min(height, MAX_HEIGHT);
@@ -54,34 +54,10 @@ public class GraphController {
             width = Math.min(width, MAX_WIDTH);
         }
 
-        Maze maze = graphService.generateMaze(height, width);
-        Grid grid = maze.getGrid();
-
-        List<List<ResponseMazeNode>> gridList = new ArrayList<>();
-        for (List<MazeNode> nodes: grid){
-            List<ResponseMazeNode> responseGridNodeList = new ArrayList<>();
-            gridList.add(responseGridNodeList);
-            for (MazeNode node: nodes) {
-                responseGridNodeList.add(getRgnFromNode(node));
-            }
-        }
-        return new ResponseEntity<>(new ResponseMaze(gridList, grid.size(), grid.get(0).size(), maze.getStart(), maze.getEnd()), HttpStatus.OK);
-//        return new ResponseMaze(gridList, grid.size(), grid.get(0).size(), maze.getStart(), maze.getEnd());
+        ResponseMaze maze = graphService.generateMaze(height, width);
+        return new ResponseEntity<>(maze, HttpStatus.OK);
     }
 
-
-    private ResponseMazeNode getRgnFromNode(MazeNode node) {
-        List<String> responseGridNodeBoundaries = new ArrayList<>();
-        Set<MazeNode.Boundary> boundaries = node.getBoundaries();
-        for (MazeNode.Boundary boundary: boundaries) {
-            if (boundary == MazeNode.Boundary.BOTTOM) {
-                responseGridNodeBoundaries.add("B");
-            } else if (boundary == MazeNode.Boundary.RIGHT) {
-                responseGridNodeBoundaries.add("R");
-            }
-        }
-        return new ResponseMazeNode(responseGridNodeBoundaries);
-    }
 
     synchronized boolean shouldProcessRequest() {
         Instant now = Instant.now();
