@@ -17,7 +17,7 @@ public class SpringApp {
         return new GraphService();
     }
 
-    @Bean
+//    @Bean
     Secrets secrets() {
         String secretsFile = "secret.properties";
         return new Secrets(secretsFile);
