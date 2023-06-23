@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graph-service-2-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: graph-service-2
+  template:
+    metadata:
+      labels:
+        app: graph-service-2
+    spec:
+      containers:
+        - name: graph-service-container
+          image: gcr.io/sturdy-index-386400/graph-service:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+              ephemeral-storage: 4Gi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+              ephemeral-storage: 1Gi

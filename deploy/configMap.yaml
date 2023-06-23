@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graph-service-2-config
+data:
+  image: gcr.io/sturdy-index-386400/graph-service:latest

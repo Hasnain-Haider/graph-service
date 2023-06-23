@@ -1,0 +1,32 @@
+steps:
+  # Fetch source code from GitHub
+  - name: "gcr.io/cloud-builders/git"
+    args: ["clone", "https://github.com/Hasnain-Haider/graph-service.git"]
+
+  # Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/sturdy-index-386400/graph-service:latest"
+      - .
+
+  # Push the Docker image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: 
+      - push
+      - "gcr.io/sturdy-index-386400/graph-service:latest"
+
+  # Update the image in the Kubernetes Deployment
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      - set
+      - image
+      - deployment/graph-service-2-deployment
+      - "graph-service-container=gcr.io/sturdy-index-386400/graph-service:latest"
+    env:
+      - "CLOUDSDK_COMPUTE_REGION=us-west1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=cluster-1"
+      
+    env:
+      - "KUBECONFIG=/workspace/kubeconfig"
