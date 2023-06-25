@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: graph-service-2-deployment
+  labels:
+    app: graph-service-2
 spec:
   replicas: 1
   selector:
@@ -20,7 +22,7 @@ spec:
           resources:
             limits:
               cpu: 1000m
-              memory: 1Gi
+              memory: 2Gi
               ephemeral-storage: 4Gi
             requests:
               cpu: 500m

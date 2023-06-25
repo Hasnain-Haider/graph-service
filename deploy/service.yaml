@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    cloud.google.com/network-tier: Standard
+  name: graph-service-2-service
+  labels:
+    app: graph-service-2
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 35.212.167.23
+  selector:
+    app: graph-service-2
+  ports:
+    - port: 80
+      targetPort: 8080
