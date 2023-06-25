@@ -57,6 +57,7 @@
             </snapshots>
         </repository>
     </repositories>
+    
     <distributionManagement>
         <snapshotRepository>
             <id>artifact-registry</id>
