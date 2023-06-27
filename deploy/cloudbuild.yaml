@@ -10,14 +10,14 @@ steps:
     args:
       - build
       - -t
-      - "gcr.io/sturdy-index-386400/graph-service:latest"
+      - "gcr.io/sturdy-index-386400/graph-service:$SHORT_SHA"
       - graph-service
 
   # Push the Docker image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args:
       - push
-      - "gcr.io/sturdy-index-386400/graph-service:latest"
+      - "gcr.io/sturdy-index-386400/graph-service:$SHORT_SHA"
 
   # Update the image in the Kubernetes Deployment
   - name: "gcr.io/cloud-builders/kubectl"
@@ -25,7 +25,7 @@ steps:
       - set
       - image
       - deployment/graph-service-2-deployment
-      - "graph-service-container=gcr.io/sturdy-index-386400/graph-service:latest"
+      - "graph-service-container=gcr.io/sturdy-index-386400/graph-service:$SHORT_SHA"
     env:
       - "CLOUDSDK_COMPUTE_REGION=us-west1"
       - "CLOUDSDK_CONTAINER_CLUSTER=cluster-1"
