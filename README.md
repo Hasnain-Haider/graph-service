@@ -30,5 +30,5 @@ In the project directory, you can run:
   - [configMap.yaml](./deploy/configMap.yaml) - config
   - [service.yaml](./deploy/service.yaml) - Kubernetes Service Load Balancer
   - [deployment.yaml](./deploy/deployment.yaml) - Kubernetes Deployment Manifests
-  - [clouddeploy.yaml](./deploy/clouddeploy.yaml) - _GCP Build Script_
+  - [clouddeploy.yaml](./deploy/cloudbuild.yaml) - _GCP Build Script_
   - [deploy.sh](./deploy/deploy.sh) - kubectl apply manifests, run cloud build
