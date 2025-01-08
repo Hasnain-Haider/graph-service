@@ -1,5 +1,7 @@
 package us.hassu.service;
 
+import org.w3c.dom.Node;
+import us.hassu.entity.NodeCoordinates;
 import us.hassu.entity.ResponseMaze;
 import us.hassu.entity.ResponseMazeNode;
 import us.hassu.graphs.maze.Grid;
@@ -15,6 +17,8 @@ public class GraphService {
     private int DEFAULT_HEIGHT = 10;
     private int DEFAULT_WIDTH = 10;
 
+    private volatile Maze lastMaze;
+
     public GraphService() {
     }
 
@@ -24,19 +28,11 @@ public class GraphService {
                 .height(Optional.ofNullable(height).orElse(DEFAULT_HEIGHT))
                 .width(Optional.ofNullable(width).orElse(DEFAULT_WIDTH))
                 .build();
-        Grid grid = maze.getGrid();
-        List<List<ResponseMazeNode>> gridList = new ArrayList<>();
-        for (List<MazeNode> nodes: grid){
-            List<ResponseMazeNode> responseGridNodeList = new ArrayList<>();
-            gridList.add(responseGridNodeList);
-            for (MazeNode node: nodes) {
-                responseGridNodeList.add(getResponseMazeNode(node));
-            }
-        }
-        return new ResponseMaze(gridList, grid.size(), grid.get(0).size(), maze.getStart(), maze.getEnd());
+        setLastMaze(maze);
+        return new ResponseMaze(maze);
     }
 
-    private ResponseMazeNode getResponseMazeNode(MazeNode node) {
+    ResponseMazeNode getResponseMazeNode(MazeNode node) {
         List<String> responseGridNodeBoundaries = new ArrayList<>();
         Set<MazeNode.Boundary> boundaries = node.getBoundaries();
         for (MazeNode.Boundary boundary: boundaries) {
@@ -46,6 +42,14 @@ public class GraphService {
                 responseGridNodeBoundaries.add("R");
             }
         }
-        return new ResponseMazeNode(responseGridNodeBoundaries);
+        return new ResponseMazeNode(node.getId(), responseGridNodeBoundaries);
+    }
+
+    synchronized void setLastMaze(Maze maze) {
+        this.lastMaze = maze;
+    }
+
+    synchronized Maze getLastMaze() {
+        return lastMaze;
     }
 }

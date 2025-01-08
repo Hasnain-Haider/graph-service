@@ -58,7 +58,6 @@ public class GraphController {
         return new ResponseEntity<>(maze, HttpStatus.OK);
     }
 
-
     synchronized boolean shouldProcessRequest() {
         Instant now = Instant.now();
         Instant oneMinuteAgo = now.minus(1, ChronoUnit.MINUTES);
