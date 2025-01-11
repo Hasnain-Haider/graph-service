@@ -4,28 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import us.hassu.entity.ResponseMaze;
-import us.hassu.entity.ResponseMazeNode;
-import us.hassu.exception.RateLimitExceededException;
-import us.hassu.graphs.graph.Graph;
-import us.hassu.graphs.maze.Grid;
-import us.hassu.graphs.maze.Maze;
-import us.hassu.graphs.maze.MazeNode;
+import org.springframework.web.bind.annotation.*;
+import us.hassu.entity.request.RequestSolveMaze;
+import us.hassu.entity.response.ResponseMaze;
+
 import us.hassu.service.GraphService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
 
 //put in many origins just to get the CORS error to go away
-@CrossOrigin(origins = {"*", "localhost:80"})
+@CrossOrigin(origins = {"*", "localhost:80", "localhost:3000"})
 @RestController
+@RequestMapping("/maze")
 public class GraphController {
     @Autowired
     GraphService graphService;
@@ -40,8 +32,9 @@ public class GraphController {
 
     private PriorityQueue<Instant> accessTimes = new PriorityQueue<>();
 
-    @GetMapping("/generatemaze")
-    public ResponseEntity<ResponseMaze> generateMaze(@RequestParam(required = false) Integer height, @RequestParam(required = false) Integer width) {
+    @GetMapping("/generate")
+    public ResponseEntity<ResponseMaze> generateMaze(@RequestParam(required = false) Integer height,
+                                                     @RequestParam(required = false) Integer width) {
 //        if (!shouldProcessRequest()) {
 //            throw new RateLimitExceededException("Too many requests");
 //        }
@@ -58,6 +51,13 @@ public class GraphController {
         return new ResponseEntity<>(maze, HttpStatus.OK);
     }
 
+    @PostMapping("/solve")
+    public ResponseEntity<Boolean> solveMaze(@RequestBody RequestSolveMaze requestSolveMaze) {
+        boolean solvedMaze = graphService.solveMaze(requestSolveMaze);
+        System.out.println("solvedMaze?:" + solvedMaze);
+        return new ResponseEntity<>(solvedMaze, HttpStatus.OK);
+    }
+
     synchronized boolean shouldProcessRequest() {
         Instant now = Instant.now();
         Instant oneMinuteAgo = now.minus(1, ChronoUnit.MINUTES);
@@ -71,4 +71,5 @@ public class GraphController {
             return false;
         }
     }
+
 }
